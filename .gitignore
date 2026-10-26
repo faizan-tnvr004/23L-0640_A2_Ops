@@ -1,0 +1,15 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.db
+mlruns/
+mlartifacts/
+artifacts/
+/data/raw
+/data/splits
+/models/*.keras
+toy_model.keras
+toy_labs/tuner_out/
+.pytest_cache/

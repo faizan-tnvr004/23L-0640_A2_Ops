@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ status }} - VisionGuard{% endblock %}
+{% block content %}
+<section class="card error-card">
+  <span class="pill pill-red">{{ status }}</span>
+  <h2>{{ title }}</h2>
+  <p class="muted">{{ message }}</p>
+  <div class="caveat">
+    <strong>Recommended action</strong>
+    <ul>
+      <li>Use a valid image in JPEG, PNG, or WEBP format.</li>
+      <li>Keep the file under the size limit.</li>
+      <li>Make sure the file is not corrupted, truncated or empty.</li>
+    </ul>
+  </div>
+  <p class="actions"><a class="btn" href="{{ url_for('index') }}">&larr; Return to upload page</a>
+  <a class="btn-ghost" href="{{ url_for('health') }}">Check health status</a></p>
+</section>
+{% endblock %}

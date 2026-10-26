@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Verify Synthetic Media Integrity</h1>
+  <p class="muted">Upload an image to estimate whether it was created by generative AI or captured in the real world.</p>
+</section>
+<form class="card upload" method="post" action="{{ url_for('predict') }}" enctype="multipart/form-data" id="form">
+  <label class="drop" id="drop" for="file">
+    <div class="drop-icon">&#128247;</div>
+    <strong id="drop-text">Drag and drop your image here</strong>
+    <span class="muted">or <u>browse files</u> from your device</span>
+    <img id="thumb" alt="" hidden>
+    <input type="file" id="file" name="image" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
+  </label>
+  <ul class="checks muted">
+    <li>JPEG, PNG, WEBP</li><li>Max size {{ max_mb }} MB</li><li>In-memory processing (nothing stored on disk)</li>
+  </ul>
+  <button class="btn" type="submit" id="go">Run VisionGuard Analysis</button>
+</form>
+<script>
+  const drop = document.getElementById('drop'), file = document.getElementById('file');
+  const text = document.getElementById('drop-text'), thumb = document.getElementById('thumb');
+  function show() {
+    if (!file.files.length) return;
+    const f = file.files[0]; text.textContent = f.name;
+    thumb.src = URL.createObjectURL(f); thumb.hidden = false;
+  }
+  file.addEventListener('change', show);
+  ['dragenter', 'dragover'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', ev => { file.files = ev.dataTransfer.files; show(); });
+  document.getElementById('form').addEventListener('submit', () => {
+    const b = document.getElementById('go'); b.disabled = true; b.textContent = 'Analyzing...';
+  });
+</script>
+{% endblock %}

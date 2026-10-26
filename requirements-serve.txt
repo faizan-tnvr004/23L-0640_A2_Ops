@@ -1,0 +1,12 @@
+# Serving image only: CPU-only TensorFlow (no ~2.5 GB of CUDA libraries). Keep the version
+# identical to requirements.txt so models saved in training load without a Keras mismatch.
+tensorflow-cpu==2.16.1
+numpy<2
+pillow>=10.2
+flask>=3.0
+werkzeug>=3.0
+gunicorn>=21.2
+sqlalchemy>=2.0
+psycopg2-binary>=2.9
+python-dotenv>=1.0
+requests>=2.31

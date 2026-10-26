@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+{% if source == 'cloud' %}
+<div class="card banner">
+  <strong>Inference executed on the cloud API</strong>
+  <span class="muted">Processed remotely at <code>{{ cloud_url }}</code></span>
+  <span class="pill">Round-trip: {{ '%.1f'|format(r.roundtrip_ms) }} ms</span>
+</div>
+{% endif %}
+<section class="card">
+  <p class="eyebrow">Analysis complete</p>
+  <h2>Classification Verdict</h2>
+  <div class="result-grid">
+    <figure>
+      <img class="preview" src="{{ preview }}" alt="Uploaded image preview">
+      <figcaption class="muted">{{ r.filename }}</figcaption>
+    </figure>
+    <div>
+      <div class="verdict {{ 'ai' if r.is_ai else 'real' }}">
+        <strong>{{ 'AI-GENERATED MEDIA' if r.is_ai else 'AUTHENTIC PHOTOGRAPH' }}</strong>
+        <span class="muted">{{ 'Synthetic patterns detected' if r.is_ai else 'No strong synthetic patterns detected' }}</span>
+      </div>
+      <p class="conf-row"><span>Model Confidence</span><strong>{{ '%.1f'|format(r.confidence * 100) }}%</strong></p>
+      <div class="bar"><div class="fill {{ 'ai' if r.is_ai else 'real' }}" style="width: {{ '%.1f'|format(r.confidence * 100) }}%"></div></div>
+      <div class="stats">
+        <div><span class="muted">Raw P(AI) output</span><code>{{ '%.4f'|format(r.raw_score) }}</code></div>
+        <div><span class="muted">Decision threshold</span><code>{{ '%.3f'|format(r.threshold) }}</code></div>
+        <div><span class="muted">Active model</span><code>{{ r.model_version }}</code></div>
+        <div><span class="muted">{{ 'Cloud latency' if source == 'cloud' else 'Inference latency' }}</span><code>{{ '%.1f'|format(r.latency_ms) }} ms</code></div>
+      </div>
+      <div class="caveat">
+        <strong>Mandatory AI advisory &amp; caveat</strong>
+        <p>VisionGuard relies on statistical pattern recognition. Heavy editing, compression, illustrations or
+        filters can cause false positives and false negatives. Treat this verdict as an assistive screening
+        indicator, not definitive forensic proof.</p>
+      </div>
+      <p class="actions"><a class="btn btn-secondary" href="{{ url_for('index') }}">&larr; Analyze another image</a>
+      <a class="btn-ghost" href="{{ url_for('history') }}">View audit trail &rarr;</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

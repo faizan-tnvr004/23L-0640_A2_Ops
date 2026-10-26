@@ -1,0 +1,46 @@
+name: VisionGuard CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-test-build:
+    name: Lint, Test, and Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-serve.txt
+          pip install pytest flake8
+
+      - name: Lint
+        run: flake8 .
+
+      - name: Unit tests
+        run: pytest -q
+
+      # The real model is DVC-tracked (not in Git), so CI builds with a tiny stand-in model.
+      - name: Create stub model for the image
+        run: python scripts/make_stub_model.py models/champion_model.keras
+
+      - name: Build Docker image
+        run: docker build -t visionguard-web:ci .
+
+      - name: Boot container and check /health
+        run: |
+          docker run -d --name vg -p 5000:5000 visionguard-web:ci
+          for i in $(seq 1 30); do
+            if curl -fs http://localhost:5000/health; then exit 0; fi
+            sleep 5
+          done
+          docker logs vg
+          exit 1

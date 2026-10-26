@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}VisionGuard{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="{{ url_for('index') }}">VisionGuard
+      {% if gateway %}<span class="pill pill-purple">CLIENT</span>{% endif %}</a>
+    <div class="links">
+      <a href="{{ url_for('index') }}">{{ 'New Inspection' if gateway else 'Detect Image' }}</a>
+      <a href="{{ url_for('history') }}">{{ 'Cloud Audit Trail' if gateway else 'Audit Trail' }}</a>
+      <a href="{{ url_for('health') }}" class="btn-ghost">System Health</a>
+    </div>
+  </nav>
+  <main class="container">{% block content %}{% endblock %}</main>
+  <footer class="footer">VisionGuard AI vs Real Detection Service &middot; {{ project }}</footer>
+</body>
+</html>
