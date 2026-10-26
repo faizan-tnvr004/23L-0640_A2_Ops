@@ -1,5 +1,6 @@
-# Slim Debian-based Python image (~140 MB) instead of the full image (~1 GB)
-FROM python:3.10-slim
+# Slim Debian-based Python image (~190 MB) instead of the full image (~1 GB).
+# 3.11 matches the training venv: Keras 3.15.1 (the version the model was saved with) needs Python >= 3.11.
+FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

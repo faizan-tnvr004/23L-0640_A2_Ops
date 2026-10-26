@@ -1,6 +1,8 @@
 # Serving image only: CPU-only TensorFlow (no ~2.5 GB of CUDA libraries). Keep the version
 # identical to requirements.txt so models saved in training load without a Keras mismatch.
 tensorflow-cpu==2.16.1
+# same Keras as training (needs Python >= 3.11); an unpinned install picks whatever pip resolves
+keras==3.15.1
 numpy<2
 pillow>=10.2
 flask>=3.0
