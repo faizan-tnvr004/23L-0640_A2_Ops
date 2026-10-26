@@ -1,5 +1,6 @@
 """Task 1.1: record exact library versions and check for a GPU."""
 import importlib
+import importlib.metadata
 import platform
 import sys
 
@@ -11,14 +12,17 @@ print(f"Python version   : {sys.version.split()[0]}")
 print(f"Python executable: {sys.executable}")
 print("-" * 60)
 
-for label, module in [("TensorFlow", "tensorflow"), ("Keras Tuner", "keras_tuner"), ("MLflow", "mlflow"),
-                      ("DagsHub", "dagshub"), ("DVC", "dvc"), ("Scikit-Learn", "sklearn"),
-                      ("Pandas", "pandas"), ("NumPy", "numpy"), ("Pillow", "PIL"),
-                      ("Matplotlib", "matplotlib"), ("Seaborn", "seaborn"), ("Flask", "flask"),
-                      ("SQLAlchemy", "sqlalchemy"), ("Requests", "requests")]:
+for label, module, dist in [("TensorFlow", "tensorflow", "tensorflow"), ("Keras", "keras", "keras"),
+                            ("Keras Tuner", "keras_tuner", "keras-tuner"), ("MLflow", "mlflow", "mlflow"),
+                            ("DagsHub", "dagshub", "dagshub"), ("DVC", "dvc", "dvc"),
+                            ("Scikit-Learn", "sklearn", "scikit-learn"), ("Pandas", "pandas", "pandas"),
+                            ("NumPy", "numpy", "numpy"), ("Pillow", "PIL", "pillow"),
+                            ("Matplotlib", "matplotlib", "matplotlib"), ("Seaborn", "seaborn", "seaborn"),
+                            ("Flask", "flask", "flask"), ("SQLAlchemy", "sqlalchemy", "sqlalchemy"),
+                            ("Requests", "requests", "requests")]:
     try:
-        mod = importlib.import_module(module)
-        print(f"{label:<14}: {getattr(mod, '__version__', 'installed (no __version__)')}")
+        importlib.import_module(module)
+        print(f"{label:<14}: {importlib.metadata.version(dist)}")
     except ImportError:
         print(f"{label:<14}: NOT INSTALLED")
 

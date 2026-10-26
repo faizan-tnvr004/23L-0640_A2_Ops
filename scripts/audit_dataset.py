@@ -68,7 +68,8 @@ def main():
             "class": name, "count": len(sub),
             "width min/med/max": f"{sub.width.min():.0f} / {sub.width.median():.0f} / {sub.width.max():.0f}",
             "height min/med/max": f"{sub.height.min():.0f} / {sub.height.median():.0f} / {sub.height.max():.0f}",
-            "size KB min/med/max": f"{sub.file_size_kb.min():.1f} / {sub.file_size_kb.median():.1f} / {sub.file_size_kb.max():.1f}",
+            "size KB min/med/max": (f"{sub.file_size_kb.min():.1f} / {sub.file_size_kb.median():.1f}"
+                                    f" / {sub.file_size_kb.max():.1f}"),
             "formats": ",".join(sorted(sub.format.unique())), "modes": ",".join(sorted(sub["mode"].unique())),
         })
     table = pd.DataFrame(summary).to_markdown(index=False)
