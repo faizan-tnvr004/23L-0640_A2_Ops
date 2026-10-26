@@ -1,0 +1,73 @@
+{
+  "info": {
+    "name": "23L-0640_A2_Ops VisionGuard API",
+    "description": "Task 7 tests for the VisionGuard cloud API on AWS EC2. Set the collection variables base_url and api_key (api_key is never committed).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://13.239.43.95" },
+    { "key": "api_key", "value": "" },
+    { "key": "ai_image", "value": "data/raw/ai/colombe.jpg" },
+    { "key": "real_image", "value": "data/raw/real/pexels-photo-1172064.jpeg" }
+  ],
+  "item": [
+    {
+      "name": "GET /health",
+      "request": { "method": "GET", "url": "{{base_url}}/health" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('status 200', () => pm.response.to.have.status(200));",
+        "pm.test('model loaded', () => pm.expect(pm.response.json().model_loaded).to.eql(true));",
+        "console.log(pm.response.text());"
+      ] } }]
+    },
+    {
+      "name": "POST /predict (AI image)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "X-API-Key", "value": "{{api_key}}" }, { "key": "Accept", "value": "application/json" }],
+        "body": { "mode": "formdata", "formdata": [{ "key": "image", "type": "file", "src": "{{ai_image}}" }] },
+        "url": "{{base_url}}/predict?format=json"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('status 200', () => pm.response.to.have.status(200));",
+        "pm.test('label is AI-Generated', () => pm.expect(pm.response.json().label).to.eql('AI-Generated'));",
+        "console.log(pm.response.text());"
+      ] } }]
+    },
+    {
+      "name": "POST /predict (real image)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "X-API-Key", "value": "{{api_key}}" }, { "key": "Accept", "value": "application/json" }],
+        "body": { "mode": "formdata", "formdata": [{ "key": "image", "type": "file", "src": "{{real_image}}" }] },
+        "url": "{{base_url}}/predict?format=json"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('status 200', () => pm.response.to.have.status(200));",
+        "pm.test('label is Authentic (Real)', () => pm.expect(pm.response.json().label).to.eql('Authentic (Real)'));",
+        "console.log(pm.response.text());"
+      ] } }]
+    },
+    {
+      "name": "POST /predict without API key (expect 401)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Accept", "value": "application/json" }],
+        "body": { "mode": "formdata", "formdata": [{ "key": "image", "type": "file", "src": "{{ai_image}}" }] },
+        "url": "{{base_url}}/predict?format=json"
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('status 401', () => pm.response.to.have.status(401));",
+        "console.log(pm.response.text());"
+      ] } }]
+    },
+    {
+      "name": "GET /history",
+      "request": { "method": "GET", "header": [{ "key": "Accept", "value": "application/json" }], "url": "{{base_url}}/history?format=json&limit=5" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('status 200', () => pm.response.to.have.status(200));",
+        "console.log(pm.response.text());"
+      ] } }]
+    }
+  ]
+}
